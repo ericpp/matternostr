@@ -13,4 +13,4 @@ RUN apk --no-cache add ca-certificates
 WORKDIR /app
 COPY --from=builder /app/matternostr /app/matternostr
 
-CMD ["/app/matternostr"]
+ENTRYPOINT ["/app/matternostr"]
