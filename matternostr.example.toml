@@ -1,0 +1,27 @@
+# Example configuration for Matterbridge Nostr Plugin
+
+# Matterbridge API Configuration
+matterbridge_url = "http://localhost:4242"
+api_token = "somepassword"
+gateway = "nostrrelay"
+
+# Nostr public/private to use to relay messages
+public_key = "npub1234567..."
+private_key = "nsec1234567..."
+
+# Nostr npub to monitor for new live events
+# The program will join any currently live events and relay chat messages
+watch_npub = "npub987654..."
+
+# Default relays to connect to
+default_relays = [
+    "wss://relay.damus.io",
+    "wss://nos.lol",
+    "wss://relay.nostr.band"
+]
+
+# Max attempts to connect to a relay before timing out
+max_retry_attempts = 3
+
+# Relay timeout interval in minutes
+retry_timeout_minutes = 10
