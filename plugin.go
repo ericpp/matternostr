@@ -136,10 +136,12 @@ func (p *NostrPlugin) discoverLiveEvents() {
 		if liveEvent.Status == "live" {
 			if p.joinLiveEvent(naddr, addr) {
 				p.logger.Infof("Joined live event: %s", liveEvent.Title)
+				p.sendJoinEventToMatterbridge(naddr, liveEvent)
 			}
 		} else {
 			if p.leaveLiveEvent(naddr) {
 				p.logger.Infof("Left live event: %s", liveEvent.Title)
+				p.sendLeaveEventToMatterbridge(naddr, liveEvent)
 			}
 		}
 	}
@@ -209,6 +211,34 @@ func (p *NostrPlugin) streamingMessages(room *NostrRoom) {
 			}
 		}
 	}
+}
+
+func (p *NostrPlugin) sendJoinEventToMatterbridge(naddr string, liveEvent nip53.LiveEvent) error {
+	mbMsg := MatterbridgeMessage{
+		Text:     "Joined " + liveEvent.Title + ": https://nostrudel.ninja/streams/" + naddr,
+		Username: "system",
+		Gateway:  p.config.Gateway,
+	}
+
+	if err := p.matterbridgeClient.SendMessage(mbMsg); err != nil {
+		p.logger.Errorf("Failed to send message to Matterbridge: %v", err)
+	}
+
+	return nil
+}
+
+func (p *NostrPlugin) sendLeaveEventToMatterbridge(naddr string, liveEvent nip53.LiveEvent) error {
+	mbMsg := MatterbridgeMessage{
+		Text:     "Left " + liveEvent.Title + ": https://nostrudel.ninja/streams/" + naddr,
+		Username: "system",
+		Gateway:  p.config.Gateway,
+	}
+
+	if err := p.matterbridgeClient.SendMessage(mbMsg); err != nil {
+		p.logger.Errorf("Failed to send message to Matterbridge: %v", err)
+	}
+
+	return nil
 }
 
 func (p *NostrPlugin) sendNostrEventToMatterbridge(ev *nostr.Event) error {
