@@ -1,0 +1,26 @@
+[api]
+[api.nostr]
+BindAddress="127.0.0.1:4242"
+Buffer=1000
+Token=""
+Label=""
+RemoteNickFormat="<{NOPINGNICK}> "
+
+[irc.zeronode]
+Server="irc.zeronode.net:6697"
+Nick="NostrRelay"
+UseTLS=true
+SkipTLSVerify=false
+RemoteNickFormat="<{NOPINGNICK}> "
+
+[[gateway]]
+name="nostrrelay"
+enable=true
+
+[[gateway.inout]]
+account="irc.zeronode"
+channel="#nostrrelay"
+
+[[gateway.inout]]
+account="api.nostr"
+channel="api"
