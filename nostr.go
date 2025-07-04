@@ -36,13 +36,17 @@ func NostrMessageFromEvent(ev *nostr.Event, relays *NostrRelays) (*NostrMessage,
 		}
 
 		nick := relays.GetNick(zapRequest.PubKey)
+		if nick == "system" {
+			nick = "not system"
+		}
+
 		amount := zapRequest.Tags.Find("amount").Value()
 		amountInt, err := strconv.ParseInt(amount, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert amount to int: %w", err)
 		}
 
-		text := "⚡ zapped " + strconv.FormatInt(amountInt/1000, 10) + " sats"
+		text := "⚡ " + nick + " zapped " + strconv.FormatInt(amountInt/1000, 10) + " sats"
 
 		if zapRequest.Content != "" {
 			text += " saying: " + zapRequest.Content
@@ -50,10 +54,13 @@ func NostrMessageFromEvent(ev *nostr.Event, relays *NostrRelays) (*NostrMessage,
 
 		return &NostrMessage{
 			Content: text,
-			Nick:    nick,
+			Nick:    "system",
 		}, nil
 	} else {
 		nick := relays.GetNick(ev.PubKey)
+		if nick == "system" {
+			nick = "not system"
+		}
 
 		return &NostrMessage{
 			Content: ev.Content,
